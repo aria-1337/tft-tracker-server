@@ -65,6 +65,12 @@ func (r *RiotAPI) Request(url string) ([]byte) {
     return body
 }
 
+func decode(body []byte, target interface{}) {
+    if err := json.Unmarshal(body, &target); err != nil {
+        fmt.Println("Error decoding JSON")
+    }
+}
+
 type RiotAccount struct {
     Puuid string `json:"puuid"`
     GameName string `json:"gameName"`
@@ -76,10 +82,25 @@ func (r *RiotAPI) AccountByRiotId(gameName string, tagLine string) RiotAccount {
     body := r.Request(url)
 
     var result RiotAccount 
+    decode(body, &result)
 
-    if err := json.Unmarshal(body, &result); err != nil {
-        fmt.Println("Error decoding JSON in AccountByRiotId")
-    }
+    return result
+}
 
+type RiotSummoner struct {
+    Id string `json:"id"`
+    AccountId string `json:"accountId"`
+    Puuid string `json:"puuid"`
+    ProfileIconId int `json:"profileIconId"`
+    SummonerLevel int `json:"summonerLevel"`
+}
+
+func (r *RiotAPI) SummonerByPuuid(puuid string) RiotSummoner {
+    url := r.BaseUrl + "tft/summoner/v1/summoners/by-puuid/" + puuid
+    body := r.Request(url)
+
+    var result RiotSummoner
+    decode(body, &result)
+    
     return result
 }
