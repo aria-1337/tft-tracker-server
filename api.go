@@ -40,7 +40,7 @@ func getUrlPrefixs(baseRegion string) (string, string) {
 }
 
 // Generic request, still need to decode body
-func (r *RiotAPI) Request(url string) ([]byte) {
+func (r *RiotAPI) Request(url string, target interface{}) {
     fmt.Println("New request:", url)
 
     client := http.Client{}
@@ -62,12 +62,9 @@ func (r *RiotAPI) Request(url string) ([]byte) {
     defer resp.Body.Close()
 
     body, _ := ioutil.ReadAll(resp.Body)
-    return body
-}
 
-func decode(body []byte, target interface{}) {
     if err := json.Unmarshal(body, &target); err != nil {
-        fmt.Println("Error decoding JSON")
+        fmt.Println("Error decoding JSON in AccountByRiotId")
     }
 }
 
@@ -79,10 +76,8 @@ type RiotAccount struct {
 
 func (r *RiotAPI) AccountByRiotId(gameName string, tagLine string) RiotAccount {
     url := r.AlternateUrl + "riot/account/v1/accounts/by-riot-id/" + gameName + "/" + tagLine
-    body := r.Request(url)
-
     var result RiotAccount 
-    decode(body, &result)
+    r.Request(url, &result)
 
     return result
 }
@@ -97,10 +92,8 @@ type RiotSummoner struct {
 
 func (r *RiotAPI) SummonerByPuuid(puuid string) RiotSummoner {
     url := r.BaseUrl + "tft/summoner/v1/summoners/by-puuid/" + puuid
-    body := r.Request(url)
-
     var result RiotSummoner
-    decode(body, &result)
-    
+    r.Request(url, &result)
+
     return result
 }
