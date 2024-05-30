@@ -10,7 +10,7 @@ import (
     "net/http"
     "io/ioutil"
     "fmt"
-    "time"
+    "github.com/ericlagergren/decimal"
 )
 
 // Interface to official RIOT API
@@ -48,7 +48,6 @@ func getUrlPrefixs(baseRegion string) (string, string) {
 // Generic request, still need to decode body
 func (r *RiotAPI) Request(url string, target interface{}) {
     fmt.Println("New request:", url)
-    time.Sleep(5 * time.Second)
 
     client := http.Client{}
     req, err := http.NewRequest("GET", url, nil)
@@ -71,7 +70,7 @@ func (r *RiotAPI) Request(url string, target interface{}) {
     body, _ := ioutil.ReadAll(resp.Body)
 
     if err := json.Unmarshal(body, &target); err != nil {
-        fmt.Println("Error decoding JSON in AccountByRiotId")
+        fmt.Println("Error decoding JSON", err)
     }
 }
 
@@ -130,7 +129,7 @@ type TFTMatch struct {
         GameCreation int `json:"gameCreation"`
         GameId int `json:"gameId"`
         GameDateTime int `json:"game_datetime"`
-        GameLength int `json:"game_length"`
+        GameLength *decimal.Big `json:"game_length"`
         GameVersion string `json:"game_version"`
         MapId int `json:"mapId"`
         Participants []struct {
@@ -146,7 +145,7 @@ type TFTMatch struct {
             Level int `json:"level"`
             Placement int `json:"placement"`
             Puuid string `json:"puuid"`
-            TimeEliminated int `json:"time_eliminated"`
+            TimeEliminated *decimal.Big `json:"time_eliminated"`
             TotalDamageToPlayers int `json:"total_damage_to_players"`
             Traits []struct {
                 Name string `json:"name"`
