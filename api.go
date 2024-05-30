@@ -1,3 +1,8 @@
+/* api.go
+    This serves as a way to construct a new Riot instance.
+    the Riot instance has methods that follow the official developer.riotgames.com/api
+    Namely ones that are useful for our app only.
+*/
 package main
 
 import (
@@ -5,6 +10,7 @@ import (
     "net/http"
     "io/ioutil"
     "fmt"
+    "time"
 )
 
 // Interface to official RIOT API
@@ -42,6 +48,7 @@ func getUrlPrefixs(baseRegion string) (string, string) {
 // Generic request, still need to decode body
 func (r *RiotAPI) Request(url string, target interface{}) {
     fmt.Println("New request:", url)
+    time.Sleep(5 * time.Second)
 
     client := http.Client{}
     req, err := http.NewRequest("GET", url, nil)
