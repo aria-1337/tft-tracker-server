@@ -111,3 +111,61 @@ func (r *RiotAPI) MatchIdsByPuuid(puuid string) []string {
 
     return cleanIds
 }
+
+type TFTMatch struct {
+    Metadata struct {
+        DataVersion string `json:"data_version"`
+        MatchId string `json:"match_id"`
+        Participants []string `json:"participants"`
+    }
+    Info struct {
+        EndOfGameResult string `json:"endOfGameResult"`
+        GameCreation int `json:"gameCreation"`
+        GameId int `json:"gameId"`
+        GameDateTime int `json:"game_datetime"`
+        GameLength int `json:"game_length"`
+        GameVersion string `json:"game_version"`
+        MapId int `json:"mapId"`
+        Participants []struct {
+            Augments []string `json:"augments"`
+            Companion struct {
+                ContentId string `json:"content_ID"`
+                ItemId int `json:"item_ID"`
+                SkinId int `json:"skin_ID"`
+                Species string `json:"species"`
+            }
+            GoldLeft int `json:"gold_left"`
+            LastRound int `json:"last_round"`
+            Level int `json:"level"`
+            Placement int `json:"placement"`
+            Puuid string `json:"puuid"`
+            TimeEliminated int `json:"time_eliminated"`
+            TotalDamageToPlayers int `json:"total_damage_to_players"`
+            Traits []struct {
+                Name string `json:"name"`
+                NumUnits int `json:"num_units"`
+                TierCurrent int `json:"tier_current"`
+                TierTotal int `json:"tier_total"`
+            }
+            Units []struct {
+                CharacterId string `json:"character_id"`
+                ItemNames []string `json:"itemNames"`
+                Name string `json:"name"`
+                Rarity int `json:"rarity"`
+                Tier int `json:"tier"`
+            }
+        }
+        QueueId int `json:"queueId"`
+        GameType string `json:"tft_game_type"`
+        SetName string `json:"tft_set_core_name"`
+        SetNumber int `json:"tft_set_number"`
+    }
+}
+
+func (r *RiotAPI) MatchById(matchId string) TFTMatch {
+    url := r.AlternateUrl + "tft/match/v1/matches/" + matchId
+    var result TFTMatch
+    r.Request(url, &result)
+
+    return result
+}
