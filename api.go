@@ -97,3 +97,17 @@ func (r *RiotAPI) SummonerByPuuid(puuid string) RiotSummoner {
 
     return result
 }
+
+func (r *RiotAPI) MatchIdsByPuuid(puuid string) []string {
+    // TODO: Can add count start endtime starttime
+    url := r.AlternateUrl + "tft/match/v1/matches/by-puuid/" + puuid + "/ids?start=0&count=50"
+    var result []interface{}
+    r.Request(url, &result)
+
+    var cleanIds []string
+    for i := range result {
+        cleanIds = append(cleanIds, result[i].(string))
+    }
+
+    return cleanIds
+}
