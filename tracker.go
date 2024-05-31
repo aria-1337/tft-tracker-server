@@ -17,9 +17,9 @@ func (r *RiotAPI) fetchSummonerByName(gameName string, tagLine string) FullSummo
     matchIds := r.MatchIdsByPuuid(riotAccount.Puuid)
 
     var matches []TFTMatch
-    // TEST: only fetch 2 matchs
+    // TEST: only fetch 1 match
     for i := range matchIds {
-        if i >= 2 {
+        if i >= 1 {
             break
         }
         match := r.MatchById(matchIds[i])
