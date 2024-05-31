@@ -50,23 +50,21 @@ func (pg *PG) addQueriesToMap() {
 /*
 This is kinda messy basically we are assuming our queries all build a json object and not multiple rows
 
-I need to test the performance of this to see how much it affects performance.
+I need to test the performance of this to see how much it differs.
 from very simple inital tests it seems to be slower but not by a huge margin.
 */
-func (pg *PG) query(queryName string, args ...interface{}) interface{} {
+func (pg *PG) query(queryName string, target interface{}, args ...interface{}) {
     rows, err := pg.Conn.Query(pg.Queries[queryName], args...)
     if err != nil {
         fmt.Println("error querying", pg.Queries[queryName], err)
     }
     defer rows.Close()
-    var data interface{}
     for rows.Next() {
         var result []byte 
         err := rows.Scan(&result)
         if err != nil {
             fmt.Println("error scanning row into result", err)
         }
-        json.Unmarshal(result, &data)
+        json.Unmarshal(result, &target)
     }
-    return data 
 }
